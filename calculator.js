@@ -37,10 +37,45 @@ function operate(operator, a, b) {
   return result;
 }
 
-const trail = document.querySelector('#trail');
+const trail = document.querySelector("#trail");
+
+function inputCheck(current_trail, input) {
+  //Change from '×' to '*'
+  input = input.replace("×", "*");
+  current_trail = current_trail.replaceAll("×", "*");
+
+  //Don't allow two operations in succession
+  if (
+    input === "+" ||
+    input === "-" ||
+    input === "*" ||
+    input === "/"
+  ) {
+    let last_char = current_trail.slice(-1);
+    if (
+      last_char === "+" ||
+      last_char === "-" ||
+      last_char === "*" ||
+      last_char === "/"
+    )
+      return false;
+  }
+
+  //Allow only one decimal point per number
+  if (input === ".") {
+    if(current_trail != '') {
+    let numbers = current_trail.split(/[\+\-\*\/]/);
+    n = numbers[numbers.length-1];
+    if(n.includes('.'))
+      return false;
+    }
+  }
+
+  return true;
+}
 
 function updateTrail(val) {
-  if(trail.textContent.length < 26)
+  if (trail.textContent.length < 26 && inputCheck(trail.textContent, val))
     trail.textContent += val;
 }
 
@@ -50,7 +85,11 @@ function clearTrail() {
 
 function updateResult(val) {
   const result = document.querySelector("#result");
-  result.textContent = eval(trail.textContent.replace('×','*'));
+  let r = eval(trail.textContent.replace("×", "*"));
+  console.log(r);
+  r === NaN
+    ? result.textContent = new String(Math.round(parseFloat(r) * 10000) / 10000)
+    : result.textContent = 0;
   clearTrail();
 }
 
@@ -61,19 +100,26 @@ function initButtons() {
       updateTrail(e.target.id.replace("btn_", ""));
     });
   }
-  document.querySelector('#btn_equ').addEventListener('click', () => updateResult());
+  document
+    .querySelector("#btn_equ")
+    .addEventListener("click", () => updateResult());
 
-  document.querySelector('#btn_add').addEventListener('click', () => updateTrail('+'));
-  document.querySelector('#btn_sub').addEventListener('click', () => updateTrail('-'));
-  document.querySelector('#btn_mul').addEventListener('click', () => updateTrail('×'));
-  document.querySelector('#btn_div').addEventListener('click', () => updateTrail('/'));
-  
-  document.querySelector('#btn_dot').addEventListener('click', () => updateTrail('.'));
+  document
+    .querySelector("#btn_add")
+    .addEventListener("click", () => updateTrail("+"));
+  document
+    .querySelector("#btn_sub")
+    .addEventListener("click", () => updateTrail("-"));
+  document
+    .querySelector("#btn_mul")
+    .addEventListener("click", () => updateTrail("×"));
+  document
+    .querySelector("#btn_div")
+    .addEventListener("click", () => updateTrail("/"));
+
+  document
+    .querySelector("#btn_dot")
+    .addEventListener("click", () => updateTrail("."));
 }
-
-
-
-
-
 
 initButtons();

@@ -58,6 +58,7 @@ button#btn_add:hover {
   text-align: right;
   font-size: 64px;
   margin:0;
+  height: 74px;
 }
 
 #trail {
