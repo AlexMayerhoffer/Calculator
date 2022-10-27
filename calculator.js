@@ -86,9 +86,8 @@ function clearTrail() {
 function updateResult(val) {
   const result = document.querySelector("#result");
   let r = eval(trail.textContent.replace("×", "*"));
-  console.log(r);
-  r === NaN
-    ? result.textContent = new String(Math.round(parseFloat(r) * 10000) / 10000)
+  r != NaN
+    ? result.textContent = new String(Math.round(r * 10000) / 10000)
     : result.textContent = 0;
   clearTrail();
 }
