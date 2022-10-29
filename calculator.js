@@ -37,58 +37,85 @@ function operate(operator, a, b) {
   return result;
 }
 
-const trail = document.querySelector("#trail");
+// --------------------------------------------------------------
 
-function inputCheck(current_trail, input) {
-  //Change from '×' to '*'
-  input = input.replace("×", "*");
-  current_trail = current_trail.replaceAll("×", "*");
+const doc_result = document.querySelector("#result");
+const doc_trail = document.querySelector("#trail");
+let trail = "";
 
-  //Don't allow two operations in succession
-  if (
-    input === "+" ||
-    input === "-" ||
-    input === "*" ||
-    input === "/"
-  ) {
-    let last_char = current_trail.slice(-1);
-    if (
-      last_char === "+" ||
-      last_char === "-" ||
-      last_char === "*" ||
-      last_char === "/"
-    )
-      return false;
-  }
-
+function checkDecimal(input) {
   //Allow only one decimal point per number
   if (input === ".") {
-    if(current_trail != '') {
-    let numbers = current_trail.split(/[\+\-\*\/]/);
-    n = numbers[numbers.length-1];
-    if(n.includes('.'))
-      return false;
+    if (trail != "") {
+      let numbers = trail.split(/[\+\-\*\/]/);
+      n = numbers[numbers.length - 1];
+      if (n.includes(".")) return false;
     }
   }
-
   return true;
 }
 
+function checkEmpty(input) {
+  if (trail.length === 0 && (input === "+" || input === "*" || input === "/")) {
+    return false;
+  }
+  return true;
+}
+
+function isOperation(input) {
+  if (input === "+" || input === "-" || input === "*" || input === "/")
+    return true;
+  return false;
+}
+
+function operationReplace(input) {
+  if (trail.length != 0) {
+    //Don't allow two operations in succession. Replace last one
+    if (input === "+" || input === "-" || input === "*" || input === "/") {
+      let last_char = trail.slice(-1);
+      if (
+        last_char === "+" ||
+        last_char === "-" ||
+        last_char === "*" ||
+        last_char === "/"
+      ) {
+        trail = trail.slice(0, -1) + input;
+        return true;
+      }
+      else {
+        trail += input;
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 function updateTrail(val) {
-  if (trail.textContent.length < 26 && inputCheck(trail.textContent, val))
-    trail.textContent += val;
+  if (trail.length < 26 && checkDecimal(val) && checkEmpty(val)) {
+    console.log('trail: ' + trail);
+    console.log('input: ' + val);
+    console.log('');
+    if (!operationReplace(val)) {
+      trail += val;
+      showTrail();
+    }
+  }
 }
 
 function clearTrail() {
-  trail.textContent = "";
+  trail = "";
+}
+
+function showTrail() {
+  doc_trail.textContent = trail.replaceAll("*", "×");
 }
 
 function updateResult(val) {
-  const result = document.querySelector("#result");
-  let r = eval(trail.textContent.replace("×", "*"));
+  let r = eval(doc_trail.textContent.replace("×", "*"));
   r != NaN
-    ? result.textContent = new String(Math.round(r * 10000) / 10000)
-    : result.textContent = 0;
+    ? (result.textContent = new String(Math.round(r * 10000) / 10000))
+    : (result.textContent = 0);
   clearTrail();
 }
 
@@ -111,7 +138,7 @@ function initButtons() {
     .addEventListener("click", () => updateTrail("-"));
   document
     .querySelector("#btn_mul")
-    .addEventListener("click", () => updateTrail("×"));
+    .addEventListener("click", () => updateTrail("*"));
   document
     .querySelector("#btn_div")
     .addEventListener("click", () => updateTrail("/"));
