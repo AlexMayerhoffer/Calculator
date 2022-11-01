@@ -81,8 +81,7 @@ function operationReplace(input) {
       ) {
         trail = trail.slice(0, -1) + input;
         return true;
-      }
-      else {
+      } else {
         trail += input;
         return true;
       }
@@ -93,9 +92,9 @@ function operationReplace(input) {
 
 function updateTrail(val) {
   if (trail.length < 26 && checkDecimal(val) && checkEmpty(val)) {
-    console.log('trail: ' + trail);
-    console.log('input: ' + val);
-    console.log('');
+    console.log("trail: " + trail);
+    console.log("input: " + val);
+    console.log("");
     if (!operationReplace(val)) {
       trail += val;
       showTrail();
@@ -146,6 +145,14 @@ function initButtons() {
   document
     .querySelector("#btn_dot")
     .addEventListener("click", () => updateTrail("."));
+
+  document
+    .querySelector("#btn_clr")
+    .addEventListener("click", () => {
+      clearTrail();
+      doc_trail.textContent = '';
+      doc_result.textContent = '0';
+    });
 }
 
 initButtons();
